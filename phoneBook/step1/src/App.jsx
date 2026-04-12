@@ -43,15 +43,27 @@ const addNewName = (event) => {
     })
 }
 
-  // HANDLERS
+
   const handleNameChange = (e) => setNewName(e.target.value)
   const handleNumberChange = (e) => setNewNumber(e.target.value)
   const handleSearchChange = (e) => setSearch(e.target.value)
 
-  // FILTER
+  
   const filteredPersons = persons.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase())
   )
+
+  const deletePerson = (id, name) => {
+  const confirmDelete = window.confirm(`Delete ${name}?`)
+
+  if (!confirmDelete) return
+
+  personService
+    .remove(id)
+    .then(() => {
+      setPersons(persons.filter(p => p.id !== id))
+    })
+}
 
   return (
     <div>
@@ -79,11 +91,17 @@ const addNewName = (event) => {
 
       <h3>Numbers</h3>
 
-      {filteredPersons.map(p => (
-        <p key={p.id}>
-          {p.name} {p.number}
-        </p>
+        {filteredPersons.map(p => (
+    <p key={p.id}>
+    {p.name} {p.number}
+     <button onClick={() => deletePerson(p.id, p.name)}>
+      delete
+    </button>
+  </p>
       ))}
+
+
+      
     </div>
   )
 }
