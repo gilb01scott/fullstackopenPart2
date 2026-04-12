@@ -5,7 +5,11 @@ import axios from "axios"
 
 const App = () => {
   const [persons, setPersons] = useState([])
+  const [newName, setNewName] = useState("")
+  const [newNumber, setNewNumber] = useState("")
+  const [search, setSearch] = useState("")
 
+  // FETCH DATA FROM BACKEND
   useEffect(() => {
     axios
       .get("http://localhost:3001/persons")
@@ -14,10 +18,73 @@ const App = () => {
       })
   }, [])
 
+  // ADD PERSON TO BACKEND (THIS IS WHAT YOU WERE MISSING)
+  const addNewName = (event) => {
+    event.preventDefault()
+
+    const exists = persons.some(
+      p => p.name.toLowerCase() === newName.toLowerCase()
+    )
+
+    if (exists) {
+      alert(`${newName} already exists`)
+      return
+    }
+
+    const newPerson = {
+      name: newName,
+      number: newNumber
+    }
+
+    axios
+      .post("http://localhost:3001/persons", newPerson)
+      .then(response => {
+        setPersons(persons.concat(response.data))
+        setNewName("")
+        setNewNumber("")
+      })
+  }
+
+  // HANDLERS
+  const handleNameChange = (e) => setNewName(e.target.value)
+  const handleNumberChange = (e) => setNewNumber(e.target.value)
+  const handleSearchChange = (e) => setSearch(e.target.value)
+
+  // FILTER
+  const filteredPersons = persons.filter(p =>
+    p.name.toLowerCase().includes(search.toLowerCase())
+  )
+
   return (
     <div>
-      {persons.map(p => (
-        <p key={p.id}>{p.name} {p.number}</p>
+      <h2>Phonebook</h2>
+
+      <input
+        placeholder="search"
+        value={search}
+        onChange={handleSearchChange}
+      />
+
+      <h3>Add new</h3>
+
+      <form onSubmit={addNewName}>
+        <div>
+          name:
+          <input value={newName} onChange={handleNameChange} />
+        </div>
+        <div>
+          number:
+          <input value={newNumber} onChange={handleNumberChange} />
+        </div>
+        <button type="submit">add</button>
+      </form>
+
+      <h3>Numbers</h3>
+
+      {filteredPersons.map(p => (
+        <p key={p.id}>
+          {p.name} {p.number}
+        </p>
       ))}
     </div>
   )
