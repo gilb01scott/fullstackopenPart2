@@ -1,7 +1,7 @@
 
 
 import { useEffect, useState } from "react"
-import axios from "axios"
+import personService from "./services/persons"
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -9,41 +9,39 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("")
   const [search, setSearch] = useState("")
 
-  // FETCH DATA FROM BACKEND
-  useEffect(() => {
-    axios
-      .get("http://localhost:3001/persons")
-      .then(response => {
-        setPersons(response.data)
-      })
-  }, [])
+  
+useEffect(() => {
+  personService
+    .getAll()
+    .then(data => setPersons(data))
+}, [])
 
-  // ADD PERSON TO BACKEND (THIS IS WHAT YOU WERE MISSING)
-  const addNewName = (event) => {
-    event.preventDefault()
+  // ADD PERSON TO BACKEND 
+const addNewName = (event) => {
+  event.preventDefault()
 
-    const exists = persons.some(
-      p => p.name.toLowerCase() === newName.toLowerCase()
-    )
+  const exists = persons.some(
+    p => p.name.toLowerCase() === newName.toLowerCase()
+  )
 
-    if (exists) {
-      alert(`${newName} already exists`)
-      return
-    }
-
-    const newPerson = {
-      name: newName,
-      number: newNumber
-    }
-
-    axios
-      .post("http://localhost:3001/persons", newPerson)
-      .then(response => {
-        setPersons(persons.concat(response.data))
-        setNewName("")
-        setNewNumber("")
-      })
+  if (exists) {
+    alert(`${newName} already exists`)
+    return
   }
+
+  const newPerson = {
+    name: newName,
+    number: newNumber
+  }
+
+  personService
+    .create(newPerson)
+    .then(returnedPerson => {
+      setPersons(persons.concat(returnedPerson))
+      setNewName("")
+      setNewNumber("")
+    })
+}
 
   // HANDLERS
   const handleNameChange = (e) => setNewName(e.target.value)
