@@ -1,5 +1,3 @@
-
-
 import { useEffect, useState } from "react"
 import personService from "./services/persons"
 
@@ -9,206 +7,118 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("")
   const [search, setSearch] = useState("")
 
+  // LOAD DATA
+  useEffect(() => {
+    personService.getAll().then(setPersons)
+  }, [])
+
+  // ADD OR UPDATE
+  const addNewName = (e) => {
+    e.preventDefault()
+
+    const existingPerson = persons.find(
+      p => p.name.toLowerCase() === newName.toLowerCase()
+    )
+
+    // UPDATE FLOW
+    if (existingPerson) {
+      const confirmUpdate = window.confirm(
+        `${newName} already exists. Replace number with the old one??`
+      )
+
+      if (!confirmUpdate) return
+
+      const updatedPerson = {
+        ...existingPerson,
+        number: newNumber
+      }
+
+      personService.update(existingPerson.id, updatedPerson)
+        .then(returned => {
+          setPersons(
+            persons.map(p =>
+              p.id !== existingPerson.id ? p : returned
+            )
+          )
+          setNewName("")
+          setNewNumber("")
+        })
+
+      return
+    }
+
   
-useEffect(() => {
-  personService
-    .getAll()
-    .then(data => setPersons(data))
-}, [])
+    const newPerson = { name: newName, number: newNumber }
 
-  // ADD PERSON TO BACKEND 
-const addNewName = (event) => {
-  event.preventDefault()
-
-  const exists = persons.some(
-    p => p.name.toLowerCase() === newName.toLowerCase()
-  )
-
-  if (exists) {
-    alert(`${newName} already exists`)
-    return
+    personService.create(newPerson)
+      .then(returned => {
+        setPersons(persons.concat(returned))
+        setNewName("")
+        setNewNumber("")
+      })
   }
 
-  const newPerson = {
-    name: newName,
-    number: newNumber
-  }
+  // DELETE
+  const deletePerson = (id, name) => {
+    const ok = window.confirm(`Delete ${name}?`)
+    if (!ok) return
 
-  personService
-    .create(newPerson)
-    .then(returnedPerson => {
-      setPersons(persons.concat(returnedPerson))
-      setNewName("")
-      setNewNumber("")
+    personService.remove(id).then(() => {
+      setPersons(persons.filter(p => p.id !== id))
     })
-}
+  }
 
-
-  const handleNameChange = (e) => setNewName(e.target.value)
-  const handleNumberChange = (e) => setNewNumber(e.target.value)
-  const handleSearchChange = (e) => setSearch(e.target.value)
-
-  
+  // FILTER
   const filteredPersons = persons.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase())
   )
-
-  const deletePerson = (id, name) => {
-  const confirmDelete = window.confirm(`Delete ${name}?`)
-
-  if (!confirmDelete) return
-
-  personService
-    .remove(id)
-    .then(() => {
-      setPersons(persons.filter(p => p.id !== id))
-    })
-}
 
   return (
     <div>
       <h2>Phonebook</h2>
 
-      <input
-        placeholder="search"
-        value={search}
-        onChange={handleSearchChange}
-      />
+      <div>
+        search:
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
 
       <h3>Add new</h3>
 
       <form onSubmit={addNewName}>
         <div>
           name:
-          <input value={newName} onChange={handleNameChange} />
+          <input
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+          />
         </div>
+
         <div>
           number:
-          <input value={newNumber} onChange={handleNumberChange} />
+          <input
+            value={newNumber}
+            onChange={(e) => setNewNumber(e.target.value)}
+          />
         </div>
+
         <button type="submit">add</button>
       </form>
 
       <h3>Numbers</h3>
 
-        {filteredPersons.map(p => (
-    <p key={p.id}>
-    {p.name} {p.number}
-     <button onClick={() => deletePerson(p.id, p.name)}>
-      delete
-    </button>
-  </p>
+      {filteredPersons.map(p => (
+        <p key={p.id}>
+          {p.name} {p.number}
+          <button onClick={() => deletePerson(p.id, p.name)}>
+            delete
+          </button>
+        </p>
       ))}
-
-
-      
     </div>
   )
 }
 
 export default App
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import { useState } from 'react'
-// import Filter from './components/Filter'
-// import PersonForm from './components/PersonForm'
-// import Persons from './components/Persons'
-// const App = () => {
-//   const [persons, setPersons] = useState([
-//     { id: 1, name: 'Arto Hellas', number: '+1 401 300 812' },
-//     { id: 2, name: 'shyaka ceddy', number: '+254 71 300 3232' },
-//     { id: 3, name: 'Gilbert Irumva', number: '+254 5700 3887' },
-//     { id: 4, name: 'Melvin Ezekiel', number: '+1 4231 300 812' },
-//   ])
-//   const [newName, setNewName] = useState('')
-//   const [newNumber, setNewNumber] = useState('')
-//   const [search, setSearch] = useState('')
-
-//   const addNewName = (event) => {
-//     event.preventDefault()
-//     const exists = persons.some(
-//       person => person.name.toLowerCase() === newName.toLowerCase()
-//     )
-//     if (exists) {
-//       alert(`${newName} already exists `)
-//       return
-//     }
-
-//     const newPerson = {
-//       id: persons.length + 1,
-//       name: newName,
-//       number: newNumber
-//     }
-
-//     setPersons([...persons, newPerson])
-//     setNewName('')
-//     setNewNumber('')
-//   }
-
-//   const handleNameChange = (event) => {
-//     setNewName(event.target.value)
-//   }
-
-//   const handleNumberChange = (event) => {
-//     setNewNumber(event.target.value)
-//   }
-
-//   const handleSearchChange = (event) => {
-//     setSearch(event.target.value)
-//   }
-
-//   const filteredPersons = persons.filter(person =>
-//     person.name.toLowerCase().includes(search.toLowerCase())
-//   )
-
-//   return (
-//     <div>
-//       <h2>Phonebook</h2>
-
-//       <Filter search={search} onSearchChange={handleSearchChange} />
-
-//       <h2>Add a new</h2>
-
-//       <PersonForm
-//         onSubmit={addNewName}
-//         newName={newName}
-//         newNumber={newNumber}
-//         onNameChange={handleNameChange}
-//         onNumberChange={handleNumberChange}
-//       />
-
-//       <h3>Numbers</h3>
-
-//       <Persons persons={filteredPersons} />
-//     </div>
-//   )
-// }
-// export default App
