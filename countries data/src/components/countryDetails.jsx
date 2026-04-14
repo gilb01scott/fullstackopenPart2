@@ -6,7 +6,6 @@ const CountryDetails = ({ country }) => {
   return (
     <div>
       <h2>{country.name.common}</h2>
-
       <p>Capital: {country.capital ? country.capital[0] : 'N/A'}</p>
       <p>Area: {country.area}</p>
 

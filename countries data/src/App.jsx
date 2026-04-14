@@ -19,7 +19,6 @@ const App = () => {
           country.name.common.toLowerCase().includes(query.toLowerCase())
         )
       : []
-
   useEffect(() => {
     if (filteredCountries.length === 1) {
       setSelectedCountry(filteredCountries[0])
@@ -27,7 +26,6 @@ const App = () => {
       setSelectedCountry(null)
     }
   }, [filteredCountries])
-
   const handleSelect = (name) => {
     setQuery(name)
   }

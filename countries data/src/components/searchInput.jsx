@@ -8,7 +8,6 @@ const SearchInput = ({ query, setQuery, suggestions = [], onSelect }) => {
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search countries..."
       />
-
       {query.length >= 2 && suggestions.length > 1 && suggestions.length <= 10 && (
         <div
           style={{
