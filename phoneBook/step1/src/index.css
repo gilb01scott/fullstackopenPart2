@@ -1,0 +1,144 @@
+/* ---------- Base ---------- */
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #f4f6fb;
+  --card: #ffffff;
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --danger: #ef4444;
+  --danger-hover: #dc2626;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  --radius: 10px;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+#root {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* ---------- App container ---------- */
+.app {
+  background: var(--card);
+  padding: 2rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.app h2 {
+  margin: 0 0 1.5rem;
+  font-size: 1.75rem;
+  color: var(--primary);
+  text-align: center;
+}
+
+.app h3 {
+  margin: 1.75rem 0 0.75rem;
+  font-size: 1.1rem;
+  color: var(--text);
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 0.4rem;
+}
+
+/* ---------- Inputs ---------- */
+.field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.field input {
+  flex: 1;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.field input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+/* ---------- Buttons ---------- */
+button {
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  transition: background 0.15s, transform 0.05s;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+.btn-add {
+  background: var(--primary);
+  color: #fff;
+  margin-top: 0.5rem;
+  padding: 0.6rem 1.4rem;
+  font-weight: 600;
+}
+
+.btn-add:hover {
+  background: var(--primary-hover);
+}
+
+.btn-delete {
+  background: var(--danger);
+  color: #fff;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+}
+
+.btn-delete:hover {
+  background: var(--danger-hover);
+}
+
+/* ---------- Persons list ---------- */
+.person {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0.85rem;
+  margin: 0.4rem 0;
+  background: #f9fafb;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.person:hover {
+  background: #f1f5f9;
+}
+
+.person-info {
+  font-weight: 500;
+}
+
+.person-number {
+  color: var(--muted);
+  margin-left: 0.5rem;
+  font-weight: 400;
+}

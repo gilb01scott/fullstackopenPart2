@@ -69,11 +69,11 @@ const App = () => {
   )
 
   return (
-    <div>
+    <div className="app">
       <h2>Phonebook</h2>
 
-      <div>
-        search:
+      <div className="field">
+        <label>search:</label>
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -83,34 +83,40 @@ const App = () => {
       <h3>Add new</h3>
 
       <form onSubmit={addNewName}>
-        <div>
-          name:
+        <div className="field">
+          <label>name:</label>
           <input
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
           />
         </div>
 
-        <div>
-          number:
+        <div className="field">
+          <label>number:</label>
           <input
             value={newNumber}
             onChange={(e) => setNewNumber(e.target.value)}
           />
         </div>
 
-        <button type="submit">add</button>
+        <button type="submit" className="btn-add">add</button>
       </form>
 
       <h3>Numbers</h3>
 
       {filteredPersons.map(p => (
-        <p key={p.id}>
-          {p.name} {p.number}
-          <button onClick={() => deletePerson(p.id, p.name)}>
+        <div key={p.id} className="person">
+          <span className="person-info">
+            {p.name}
+            <span className="person-number">{p.number}</span>
+          </span>
+          <button
+            className="btn-delete"
+            onClick={() => deletePerson(p.id, p.name)}
+          >
             delete
           </button>
-        </p>
+        </div>
       ))}
     </div>
   )
