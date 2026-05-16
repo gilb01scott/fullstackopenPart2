@@ -1,15 +1,26 @@
 import { useEffect, useState } from "react"
 import personService from "./services/persons"
 
+const Notification = ({ message, type }) => {
+  if (!message) return null
+  return <div className={`notification ${type}`}>{message}</div>
+}
+
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState("")
   const [newNumber, setNewNumber] = useState("")
   const [search, setSearch] = useState("")
+  const [notification, setNotification] = useState({ message: null, type: null })
 
   useEffect(() => {
     personService.getAll().then(setPersons)
   }, [])
+
+  const notify = (message, type = 'success') => {
+    setNotification({ message, type })
+    setTimeout(() => setNotification({ message: null, type: null }), 5000)
+  }
 
   const addNewName = (e) => {
     e.preventDefault()
@@ -39,6 +50,11 @@ const App = () => {
           )
           setNewName("")
           setNewNumber("")
+          notify(`Updated ${returned.name}`)
+        })
+        .catch(error => {
+          const msg = error.response?.data?.error || 'Update failed'
+          notify(msg, 'error')
         })
 
       return
@@ -52,6 +68,11 @@ const App = () => {
         setPersons(persons.concat(returned))
         setNewName("")
         setNewNumber("")
+        notify(`Added ${returned.name}`)
+      })
+      .catch(error => {
+        const msg = error.response?.data?.error || 'Create failed'
+        notify(msg, 'error')
       })
   }
 
@@ -59,9 +80,15 @@ const App = () => {
     const ok = window.confirm(`Delete ${name}?`)
     if (!ok) return
 
-    personService.remove(id).then(() => {
-      setPersons(persons.filter(p => p.id !== id))
-    })
+    personService.remove(id)
+      .then(() => {
+        setPersons(persons.filter(p => p.id !== id))
+        notify(`Deleted ${name}`)
+      })
+      .catch(error => {
+        const msg = error.response?.data?.error || 'Delete failed'
+        notify(msg, 'error')
+      })
   }
 
   const filteredPersons = persons.filter(p =>
@@ -71,6 +98,8 @@ const App = () => {
   return (
     <div className="app">
       <h2>Phonebook</h2>
+
+      <Notification message={notification.message} type={notification.type} />
 
       <div className="field">
         <label>search:</label>
